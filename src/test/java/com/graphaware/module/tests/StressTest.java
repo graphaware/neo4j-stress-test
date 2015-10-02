@@ -11,6 +11,7 @@ import com.graphaware.test.data.GraphgenPopulator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Before;
 import org.neo4j.test.TestGraphDatabaseFactory;
 import org.slf4j.Logger;
@@ -83,6 +84,7 @@ public class StressTest
   @Test
   public void test() throws IOException
   {
+    
     int maxPeople = 1000;
     List<String> people = new ArrayList<>();
     try (Transaction tx = database.beginTx())
@@ -95,15 +97,25 @@ public class StressTest
       }
       tx.success();
     }
+    SummaryStatistics statistics = new SummaryStatistics();
     for (String name : people)
     {
       try (Transaction tx = database.beginTx())
       {
+        long start = System.currentTimeMillis();
         Result execute = database.execute("MATCH (a:Person {name:\"" + name + "\"})-[:KNOWS]->(b:Person)-[:KNOWS]->(c:Person) \n"
                 + "WHERE NOT (a)-[:KNOWS]->(c) \n"
                 + "RETURN c.name");
+        long end = System.currentTimeMillis();
+        statistics.addValue(end-start);
         tx.success();
       }
     }
+    LOG.warn("Total time: " + statistics.getSum() +"\n"
+             + "Occurrence: " + statistics.getN() + "\n"
+             + "Mean: " + statistics.getMean() + "\n"
+             + "Min: " + statistics.getMin() + "\n"
+             + "Max: " + statistics.getMax() + "\n"
+             + "Variance: " + statistics.getVariance() + "\n");
   }
 }
