@@ -83,7 +83,7 @@ public class StressTest
   @Test
   public void test() throws IOException
   {
-    int maxPeople = 200;
+    int maxPeople = 1000;
     List<String> people = new ArrayList<>();
     try (Transaction tx = database.beginTx())
     {
