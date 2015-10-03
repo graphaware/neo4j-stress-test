@@ -1,89 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>uuid</artifactId>
+  <artifactId>uuid</artifactId>
+  <version>2.3.0.35-SNAPSHOT</version>
+
+  <parent>
+    <groupId>com.graphaware.neo4j</groupId>
+    <artifactId>module-parent</artifactId>
     <version>2.3.0.35-SNAPSHOT</version>
+  </parent>
 
-    <parent>
-        <groupId>com.graphaware.neo4j</groupId>
-        <artifactId>module-parent</artifactId>
-        <version>2.3.0.35-SNAPSHOT</version>
-    </parent>
+  <name>GraphAware Test Module</name>
+  <description>
+  </description>
+  <url>http://graphaware.com</url>
 
-    <name>GraphAware Test Module</name>
-    <description>
-    </description>
+  <licenses>
+    <license>
+      <name>GNU General Public License, version 3</name>
+      <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:graphaware/neo4j-stress-test.git</connection>
+    <developerConnection>scm:git:git@github.com:graphaware/neo4j-stress-test.git</developerConnection>
+    <url>git@github.com:graphaware/neo4j-stress-test.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>alenegro81</id>
+      <name>Alessandro Negro</name>
+      <email>alessandro@graphaware.com</email>
+    </developer>
+  </developers>
+
+
+  <inceptionYear>2015</inceptionYear>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/graphaware/neo4j-stress-test/issues</url>
+  </issueManagement>
+
+  <organization>
+    <name>Graph Aware Limited</name>
     <url>http://graphaware.com</url>
+  </organization>
 
-    <licenses>
-        <license>
-            <name>GNU General Public License, version 3</name>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <dependencies>
 
-    <scm>
-        <connection>scm:git:git@github.com:graphaware/neo4j-stress-test.git</connection>
-        <developerConnection>scm:git:git@github.com:graphaware/neo4j-stress-test.git</developerConnection>
-        <url>git@github.com:graphaware/neo4j-stress-test.git</url>
-        <tag>HEAD</tag>
-    </scm>
+    <dependency>
+      <groupId>com.graphaware.neo4j</groupId>
+      <artifactId>runtime</artifactId>
+    </dependency>
 
-    <developers>
-        <developer>
-            <id>alenegro81</id>
-            <name>Alessandro Negro</name>
-            <email>alessandro@graphaware.com</email>
-        </developer>
-    </developers>
+    <dependency>
+      <groupId>com.graphaware.neo4j</groupId>
+      <artifactId>tx-api</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>com.graphaware.neo4j</groupId>
+      <artifactId>tx-executor</artifactId>
+    </dependency>
 
-    <inceptionYear>2015</inceptionYear>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
 
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/graphaware/neo4j-stress-test/issues</url>
-    </issueManagement>
+    <dependency>
+      <groupId>com.graphaware.neo4j</groupId>
+      <artifactId>server-community</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-math</groupId>
+      <artifactId>commons-math</artifactId>
+      <version>1.2</version>
+    </dependency>
 
-    <organization>
-        <name>Graph Aware Limited</name>
-        <url>http://graphaware.com</url>
-    </organization>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>com.graphaware.neo4j</groupId>
-            <artifactId>runtime</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.graphaware.neo4j</groupId>
-            <artifactId>tx-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.graphaware.neo4j</groupId>
-            <artifactId>tx-executor</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.graphaware.neo4j</groupId>
-            <artifactId>server-community</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-math</groupId>
-            <artifactId>commons-math</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-    </dependencies>
-
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <argLine>-Xmx4096m -XX:MaxPermSize=256m</argLine>
+        </configuration>
+        <!--executions>
+          <execution>
+            <id>unittests</id>
+            <phase>install</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>false</skip>
+              <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+              <includes>
+                <include>**/**/**/*Test.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions-->
+      </plugin>
+    </plugins>
+  </build>
 </project>
