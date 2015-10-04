@@ -45,9 +45,19 @@ public class StressTest
   @Before
   public void setUp()
   {
-    database = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"))
+    /*if[NEO4J_2_3]
+      database = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"))
             .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
             .newGraphDatabase();
+    end[NEO4J_2_3]*/
+      
+    /*if[NEO4J_2_2_5]
+      database = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder("/tmp/graph_" + System.currentTimeMillis() + ".db")
+            .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+            .newGraphDatabase();
+    end[NEO4J_2_2_5]*/
+      
+    
     populateDatabase(database);
 
   }

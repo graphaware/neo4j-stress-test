@@ -19,11 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
-public class StressTest2
+public class Stress2Test
          //extends GraphAwareApiTest
 {
 
-  private static final Logger LOG = LoggerFactory.getLogger(StressTest2.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Stress2Test.class);
   private GraphDatabaseService database;
 
   //@Override
@@ -45,10 +45,18 @@ public class StressTest2
   @Before
   public void setUp()
   {
-    database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/Users/ale/Downloads/graph.db"));
-            //.loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-            //.newGraphDatabase();
-    
+    /*if[NEO4J_2_3]
+      database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/Users/ale/Downloads/graph-2.3-M03.db"));
+    end[NEO4J_2_3]*/
+      
+    /*if[NEO4J_2_2_5]
+      database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.2.5.db");
+    end[NEO4J_2_2_5]*/
+
+    //database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.3-M03.db");
+    //.loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+    //.newGraphDatabase();
+
   }
 
   public String baseUrl()
@@ -85,11 +93,11 @@ public class StressTest2
   public void test() throws IOException
   {
 
-    int maxPeople = 1000;
+    int maxPeople = 10;
     List<String> people = new ArrayList<>();
     try (Transaction tx = database.beginTx())
     {
-      Result result = database.execute("MATCH (n:User) return n.id");// LIMIT " + maxPeople);
+      Result result = database.execute("MATCH (n:User) return n.id LIMIT " + maxPeople);
       while (result.hasNext())
       {
         Map<String, Object> row = result.next();
@@ -97,7 +105,7 @@ public class StressTest2
       }
       tx.success();
     }
-    
+
     SummaryStatistics timeStatistics = new SummaryStatistics();
     SummaryStatistics resultStatistics = new SummaryStatistics();
     for (String name : people)
