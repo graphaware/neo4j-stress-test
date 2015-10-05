@@ -8,20 +8,22 @@ import java.io.IOException;
 
 import com.graphaware.test.data.DatabasePopulator;
 import com.graphaware.test.data.GraphgenPopulator;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Before;
+import org.neo4j.test.TestGraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
-public class Stress2Test
+public class Stress3Test
          //extends GraphAwareApiTest
 {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Stress2Test.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Stress3Test.class);
   private GraphDatabaseService database;
 
   //@Override
@@ -40,15 +42,15 @@ public class Stress2Test
     return "neo4j-server.properties";
   }
 
-  //@Before
+  @Before
   public void setUp()
   {
     /*if[NEO4J_2_3]
-      database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/Users/ale/Downloads/graph-2.3-M03.db"));
+      database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"));
     end[NEO4J_2_3]*/
       
     /*if[NEO4J_2_2_5]
-      database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.2.5.db");
+      database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/tmp/graph_" + System.currentTimeMillis() + ".db");
     end[NEO4J_2_2_5]*/
 
     //database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.3-M03.db");
@@ -87,12 +89,30 @@ public class Stress2Test
 
   }
 
-  //@Test
+  @Test
   public void test() throws IOException
   {
 
+    String path = System.getProperty("databaseCSVPath");
+    
+    LOG.warn("Start importing ...");
+    {
+      long startTime = System.currentTimeMillis();
+      Result result = database.execute("USING PERIODIC COMMIT 500\n" +
+      "LOAD CSV FROM \"file://"+path+"\" AS line\n" +
+      "FIELDTERMINATOR \"\\t\"\n" +
+      "WITH line[0] as a, line[1] as b\n" +
+      "MERGE (p:User {id: a})\n" +
+      "MERGE (p2:User {id:b})\n" +
+      "MERGE (p)-[:KNOWS]->(p2)");
+      long endTime = System.currentTimeMillis();
+      LOG.warn("Time to import: " + (endTime - startTime) + "ms");
+    }
+    LOG.warn("... end");
+    
     int maxPeople = 10;
     List<String> people = new ArrayList<>();
+    
     try (Transaction tx = database.beginTx())
     {
       Result result = database.execute("MATCH (n:User) return n.id LIMIT " + maxPeople);

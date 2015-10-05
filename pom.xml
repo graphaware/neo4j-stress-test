@@ -391,6 +391,9 @@
         <version>2.18.1</version>
         <configuration>
           <argLine>-Xmx4096m -XX:MaxPermSize=256m</argLine>
+          <systemPropertyVariables>
+             <databaseCSVPath>${basedir}/database/pokec.txt</databaseCSVPath>
+           </systemPropertyVariables>
         </configuration>
         <!--executions>
           <execution>
@@ -423,6 +426,26 @@
             <configuration>
               <mungedDirectory>${project.build.directory}/munged</mungedDirectory>
               <symbols>${munge.symbols}</symbols>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>maven-download-plugin</artifactId>
+        <version>1.1.0</version>
+        <executions>
+          <execution>
+            <!-- the wget goal actually binds itself to this phase by default -->
+            <phase>process-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://www.dropbox.com/s/ikixrw71vr0a6hw/pokec.txt?dl=0</url>
+              <outputFileName>pokec.txt</outputFileName>
+              <!-- default target location, just to demonstrate the parameter -->
+              <targetDirectory>${basedir}/database</targetDirectory>
             </configuration>
           </execution>
         </executions>
