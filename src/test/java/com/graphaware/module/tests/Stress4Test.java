@@ -54,7 +54,7 @@ public class Stress4Test
     String path = System.getProperty("databaseCSVPath");
 
 
-    GACSVFileSource source = new GACSVFileSource(path, "\t", "id");
+    
     String databasePath = "";
     /*if[NEO4J_2_3]
       databasePath = "/tmp/graph_2.3.db";
@@ -66,6 +66,7 @@ public class Stress4Test
     
     if (!new File(databasePath).exists())
     {
+      GACSVFileSource source = new GACSVFileSource(path, "\t", "id");
       GABatchInserter inserter = new GABatchInserter(source, databasePath);
       long startTime = System.currentTimeMillis();
       inserter.load("User", "id");
