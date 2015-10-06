@@ -50,7 +50,7 @@ public class Stress3Test
               .newEmbeddedDatabaseBuilder(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"))
               .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
               .newGraphDatabase();
-    //end[NEO4J_2_3]*/
+    end[NEO4J_2_3]*/
       
     /*if[NEO4J_2_2_5]
       database = new TestGraphDatabaseFactory()
