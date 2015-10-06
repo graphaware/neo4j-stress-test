@@ -8,8 +8,6 @@ import org.neo4j.graphdb.*;
 
 import java.io.IOException;
 
-import com.graphaware.test.data.DatabasePopulator;
-import com.graphaware.test.data.GraphgenPopulator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,14 +65,14 @@ public class Stress4Test
     /*if[NEO4J_2_3]
       database = new TestGraphDatabaseFactory()
               .newEmbeddedDatabaseBuilder(new File(databasePath))
-              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j-noga.properties").getPath())
               .newGraphDatabase();
     end[NEO4J_2_3]*/
       
     /*if[NEO4J_2_2_5]
       database = new TestGraphDatabaseFactory()
               .newEmbeddedDatabaseBuilder(databasePath)
-              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j-noga.properties").getPath())
               .newGraphDatabase();
     end[NEO4J_2_2_5]*/
     
