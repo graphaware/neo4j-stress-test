@@ -44,11 +44,11 @@ public class Stress2Test
   public void setUp()
   {
     /*if[NEO4J_2_3]
-      database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/Users/ale/Downloads/graph-2.3-M03.db"));
+    //  database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/Users/ale/Downloads/graph-2.3-M03.db"));
     end[NEO4J_2_3]*/
       
     /*if[NEO4J_2_2_5]
-      database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.2.5.db");
+    //  database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.2.5.db");
     end[NEO4J_2_2_5]*/
 
     //database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.3-M03.db");

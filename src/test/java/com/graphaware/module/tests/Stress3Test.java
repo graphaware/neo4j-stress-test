@@ -46,11 +46,17 @@ public class Stress3Test
   public void setUp()
   {
     /*if[NEO4J_2_3]
-      database = new TestGraphDatabaseFactory().newEmbeddedDatabase(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"));
-    end[NEO4J_2_3]*/
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"))
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    //end[NEO4J_2_3]*/
       
     /*if[NEO4J_2_2_5]
-      database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/tmp/graph_" + System.currentTimeMillis() + ".db");
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder("/tmp/graph_" + System.currentTimeMillis() + ".db")
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
     end[NEO4J_2_2_5]*/
 
     //database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.3-M03.db");
@@ -95,13 +101,15 @@ public class Stress3Test
 
     String path = System.getProperty("databaseCSVPath");
     
+    database.execute("CREATE INDEX ON :User(id)");
+    
     LOG.warn("Start importing ...");
     {
       long startTime = System.currentTimeMillis();
-      Result result = database.execute("USING PERIODIC COMMIT 500\n" +
+      Result result = database.execute("USING PERIODIC COMMIT 5000\n" +
       "LOAD CSV FROM \"file://"+path+"\" AS line\n" +
       "FIELDTERMINATOR \"\\t\"\n" +
-      "WITH line[0] as a, line[1] as b\n" +
+      "WITH line[0] as a, line[1] as b LIMIT 10000\n" +
       "MERGE (p:User {id: a})\n" +
       "MERGE (p2:User {id:b})\n" +
       "MERGE (p)-[:KNOWS]->(p2)");

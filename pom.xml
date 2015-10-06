@@ -390,7 +390,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.18.1</version>
         <configuration>
-          <argLine>-Xmx4096m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xmx8192m -XX:MaxPermSize=256m</argLine>
           <systemPropertyVariables>
              <databaseCSVPath>${basedir}/database/pokec.txt</databaseCSVPath>
            </systemPropertyVariables>
@@ -442,10 +442,10 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://www.dropbox.com/s/ikixrw71vr0a6hw/pokec.txt?dl=0</url>
+              <url>https://www.dropbox.com/s/ikixrw71vr0a6hw/pokec.txt?dl=1</url>
               <outputFileName>pokec.txt</outputFileName>
-              <!-- default target location, just to demonstrate the parameter -->
-              <targetDirectory>${basedir}/database</targetDirectory>
+              <!--skipCache>true</skipCache-->
+              <outputDirectory>${basedir}/database</outputDirectory>
             </configuration>
           </execution>
         </executions>
