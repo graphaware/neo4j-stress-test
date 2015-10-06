@@ -109,7 +109,7 @@ public class Stress3Test
       Result result = database.execute("USING PERIODIC COMMIT 5000\n" +
       "LOAD CSV FROM \"file://"+path+"\" AS line\n" +
       "FIELDTERMINATOR \"\\t\"\n" +
-      "WITH line[0] as a, line[1] as b LIMIT 10000\n" +
+      "WITH line[0] as a, line[1] as b\n" +
       "MERGE (p:User {id: a})\n" +
       "MERGE (p2:User {id:b})\n" +
       "MERGE (p)-[:KNOWS]->(p2)");
