@@ -55,13 +55,27 @@ public class Stress4Test
 
 
     GACSVFileSource source = new GACSVFileSource(path, "\t", "id");
-    final String databasePath = "/tmp/graph_" + System.currentTimeMillis() + ".db";
-    GABatchInserter inserter = new GABatchInserter(source, databasePath);
-    long startTime = System.currentTimeMillis();
-    inserter.load("User", "id");
-    long endTime = System.currentTimeMillis();
-    LOG.warn("Time to import: " + (endTime - startTime) + "ms");
-
+    String databasePath = "";
+    /*if[NEO4J_2_3]
+      databasePath = "/tmp/graph_2.3.db";
+    end[NEO4J_2_3]*/
+      
+    /*if[NEO4J_2_2_5]
+      databasePath = "/tmp/graph_2.2.5.db";
+    end[NEO4J_2_2_5]*/
+    
+    if (!new File(databasePath).exists())
+    {
+      GABatchInserter inserter = new GABatchInserter(source, databasePath);
+      long startTime = System.currentTimeMillis();
+      inserter.load("User", "id");
+      long endTime = System.currentTimeMillis();
+      LOG.warn("Time to import: " + (endTime - startTime) + "ms");
+    }
+    else
+    {
+      LOG.warn("Database: " + databasePath + " Already exist");
+    }
     /*if[NEO4J_2_3]
       database = new TestGraphDatabaseFactory()
               .newEmbeddedDatabaseBuilder(new File(databasePath))

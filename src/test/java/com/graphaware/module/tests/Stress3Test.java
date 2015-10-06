@@ -47,7 +47,7 @@ public class Stress3Test
   {
 
     String path = System.getProperty("databaseCSVPath");
-    int maxPeople = 100000;
+    int maxPeople = 10000;
     String databasePath = "/tmp/graph_" + System.currentTimeMillis() + ".db";
     
     /*if[NEO4J_2_3]
@@ -72,7 +72,7 @@ public class Stress3Test
       Result result = database.execute("USING PERIODIC COMMIT 5000\n" +
       "LOAD CSV FROM \"file://"+path+"\" AS line\n" +
       "FIELDTERMINATOR \"\\t\"\n" +
-      "WITH line[0] as a, line[1] as b\n" +
+      "WITH line[0] as a, line[1] as b LIMIT 10000\n" +
       "MERGE (p:User {id: a})\n" +
       "MERGE (p2:User {id:b})\n" +
       "MERGE (p)-[:KNOWS]->(p2)");
