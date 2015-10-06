@@ -1,6 +1,8 @@
 
 package com.graphaware.module.tests;
 
+import com.graphaware.module.batchinsert.GABatchInserter;
+import com.graphaware.module.batchinsert.GACSVFileSource;
 import org.junit.Test;
 import org.neo4j.graphdb.*;
 
@@ -19,11 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
-public class Stress3Test
+public class Stress4Test
          //extends GraphAwareApiTest
 {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Stress3Test.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Stress4Test.class);
   private GraphDatabaseService database;
 
   //@Override
@@ -45,54 +47,6 @@ public class Stress3Test
   @Before
   public void setUp()
   {
-    /*if[NEO4J_2_3]
-      database = new TestGraphDatabaseFactory()
-              .newEmbeddedDatabaseBuilder(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"))
-              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-              .newGraphDatabase();
-    end[NEO4J_2_3]*/
-      
-    /*if[NEO4J_2_2_5]
-      database = new TestGraphDatabaseFactory()
-              .newEmbeddedDatabaseBuilder("/tmp/graph_" + System.currentTimeMillis() + ".db")
-              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-              .newGraphDatabase();
-    end[NEO4J_2_2_5]*/
-
-    //database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.3-M03.db");
-    //.loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-    //.newGraphDatabase();
-
-  }
-
-  public String baseUrl()
-  {
-    return "http://localhost:7575";
-  }
-
-  protected DatabasePopulator databasePopulator()
-  {
-    return new GraphgenPopulator()
-    {
-      @Override
-      protected String file() throws IOException
-      {
-        return new ClassPathResource("demo-data.cyp").getFile().getAbsolutePath();
-      }
-    };
-  }
-
-  protected void populateDatabase(GraphDatabaseService database)
-  {
-    LOG.warn("Starting populating the database ...");
-
-    DatabasePopulator populator = databasePopulator();
-    if (populator != null)
-    {
-      populator.populate(database);
-    }
-    LOG.warn("... database populated!");
-
   }
 
   @Test
@@ -100,31 +54,32 @@ public class Stress3Test
   {
 
     String path = System.getProperty("databaseCSVPath");
-    int maxPeople = 10000;
-    
-    database.execute("CREATE INDEX ON :User(id)");
-    
-    LOG.warn("Start importing ...");
-    {
-      long startTime = System.currentTimeMillis();
-      Result result = database.execute("USING PERIODIC COMMIT 5000\n" +
-      "LOAD CSV FROM \"file://"+path+"\" AS line\n" +
-      "FIELDTERMINATOR \"\\t\"\n" +
-      "WITH line[0] as a, line[1] as b LIMIT "+maxPeople +"\n" +
-      "MERGE (p:User {id: a})\n" +
-      "MERGE (p2:User {id:b})\n" +
-      "MERGE (p)-[:KNOWS]->(p2)");
-      long endTime = System.currentTimeMillis();
-      LOG.warn("Time to import: " + (endTime - startTime) + "ms");
-    }
-    LOG.warn("... end");
-    
-    
+
+
+    GACSVFileSource source = new GACSVFileSource(path, "\t", "id");
+    final String databasePath = "/tmp/graph_" + System.currentTimeMillis() + ".db";
+    GABatchInserter inserter = new GABatchInserter(source, databasePath);
+    long startTime = System.currentTimeMillis();
+    inserter.load("User", "id");
+    long endTime = System.currentTimeMillis();
+    LOG.warn("Time to import: " + (endTime - startTime) + "ms");
+
+    /*if[NEO4J_2_3]
+     database = new TestGraphDatabaseFactory().newEmbeddedDatabaseBuilder(new File(databasePath))
+     .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+     .newGraphDatabase();
+     end[NEO4J_2_3]*/
+    /*if[NEO4J_2_2_5]
+     database = new TestGraphDatabaseFactory().newEmbeddedDatabaseBuilder(databasePath)
+     .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+     .newGraphDatabase();
+     end[NEO4J_2_2_5]*/
+    int maxPeople = 10;
     List<String> people = new ArrayList<>();
-    
+
     try (Transaction tx = database.beginTx())
     {
-      Result result = database.execute("MATCH (n:User) return n.id LIMIT " + maxPeople);
+      Result result = database.execute("MATCH (n:User) return n.id");// LIMIT " + maxPeople);
       while (result.hasNext())
       {
         Map<String, Object> row = result.next();
@@ -162,5 +117,6 @@ public class Stress3Test
             + "Results Min: " + resultStatistics.getMin() + "\n"
             + "Results Max: " + resultStatistics.getMax() + "\n"
             + "Results Mean: " + resultStatistics.getMean() + "\n");
+
   }
 }
