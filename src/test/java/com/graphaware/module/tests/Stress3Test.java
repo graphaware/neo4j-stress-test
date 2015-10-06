@@ -45,19 +45,7 @@ public class Stress3Test
   @Before
   public void setUp()
   {
-    /*if[NEO4J_2_3]
-      database = new TestGraphDatabaseFactory()
-              .newEmbeddedDatabaseBuilder(new File("/tmp/graph_" + System.currentTimeMillis() + ".db"))
-              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-              .newGraphDatabase();
-    end[NEO4J_2_3]*/
-      
-    /*if[NEO4J_2_2_5]
-      database = new TestGraphDatabaseFactory()
-              .newEmbeddedDatabaseBuilder("/tmp/graph_" + System.currentTimeMillis() + ".db")
-              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-              .newGraphDatabase();
-    end[NEO4J_2_2_5]*/
+    
 
     //database = new TestGraphDatabaseFactory().newEmbeddedDatabase("/Users/ale/Downloads/graph-2.3-M03.db");
     //.loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
@@ -100,7 +88,22 @@ public class Stress3Test
   {
 
     String path = System.getProperty("databaseCSVPath");
-    int maxPeople = 10000;
+    int maxPeople = 100000;
+    String databasePath = "/tmp/graph_" + System.currentTimeMillis() + ".db";
+    
+    /*if[NEO4J_2_3]
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(new File(databasePath))
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    end[NEO4J_2_3]*/
+      
+    /*if[NEO4J_2_2_5]
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(databasePath)
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    end[NEO4J_2_2_5]*/
     
     database.execute("CREATE INDEX ON :User(id)");
     
@@ -110,7 +113,7 @@ public class Stress3Test
       Result result = database.execute("USING PERIODIC COMMIT 5000\n" +
       "LOAD CSV FROM \"file://"+path+"\" AS line\n" +
       "FIELDTERMINATOR \"\\t\"\n" +
-      "WITH line[0] as a, line[1] as b LIMIT "+maxPeople +"\n" +
+      "WITH line[0] as a, line[1] as b\n" +
       "MERGE (p:User {id: a})\n" +
       "MERGE (p2:User {id:b})\n" +
       "MERGE (p)-[:KNOWS]->(p2)");
@@ -118,6 +121,21 @@ public class Stress3Test
       LOG.warn("Time to import: " + (endTime - startTime) + "ms");
     }
     LOG.warn("... end");
+    
+    database.shutdown();
+    /*if[NEO4J_2_3]
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(new File(databasePath))
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    end[NEO4J_2_3]*/
+      
+    /*if[NEO4J_2_2_5]
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(databasePath)
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    end[NEO4J_2_2_5]*/
     
     
     List<String> people = new ArrayList<>();
@@ -148,10 +166,12 @@ public class Stress3Test
           Long res = (Long) execute.next().get("count(c)");
           resultStatistics.addValue(res);
         }
+        tx.success();
         long end = System.currentTimeMillis();
         timeStatistics.addValue(end - start);
-        tx.success();
       }
+      if (resultStatistics.getN() % 10000 == 0)
+        LOG.warn("Processed: " + resultStatistics.getN());
     }
     LOG.warn("\nTotal time: " + timeStatistics.getSum() + "ms\n"
             + "Queries: " + timeStatistics.getN() + "\n"

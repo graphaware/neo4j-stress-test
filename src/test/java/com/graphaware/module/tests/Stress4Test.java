@@ -65,21 +65,28 @@ public class Stress4Test
     LOG.warn("Time to import: " + (endTime - startTime) + "ms");
 
     /*if[NEO4J_2_3]
-     database = new TestGraphDatabaseFactory().newEmbeddedDatabaseBuilder(new File(databasePath))
-     .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-     .newGraphDatabase();
-     end[NEO4J_2_3]*/
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(new File(databasePath))
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    end[NEO4J_2_3]*/
+      
     /*if[NEO4J_2_2_5]
-     database = new TestGraphDatabaseFactory().newEmbeddedDatabaseBuilder(databasePath)
-     .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
-     .newGraphDatabase();
-     end[NEO4J_2_2_5]*/
-    int maxPeople = 10;
+      database = new TestGraphDatabaseFactory()
+              .newEmbeddedDatabaseBuilder(databasePath)
+              .loadPropertiesFromFile(this.getClass().getClassLoader().getResource("neo4j.properties").getPath())
+              .newGraphDatabase();
+    end[NEO4J_2_2_5]*/
+    
+    LOG.warn("Creating indices");
+    database.execute("CREATE INDEX ON :User(id)");
+    
+    int maxPeople = 100000;
     List<String> people = new ArrayList<>();
-
+    LOG.warn("Creating list");
     try (Transaction tx = database.beginTx())
     {
-      Result result = database.execute("MATCH (n:User) return n.id");// LIMIT " + maxPeople);
+      Result result = database.execute("MATCH (n:User) return n.id LIMIT " + maxPeople);
       while (result.hasNext())
       {
         Map<String, Object> row = result.next();
@@ -103,10 +110,12 @@ public class Stress4Test
           Long res = (Long) execute.next().get("count(c)");
           resultStatistics.addValue(res);
         }
+        tx.success();
         long end = System.currentTimeMillis();
         timeStatistics.addValue(end - start);
-        tx.success();
       }
+      if (resultStatistics.getN() % 10000 == 0)
+        LOG.warn("Processed: " + resultStatistics.getN());
     }
     LOG.warn("\nTotal time: " + timeStatistics.getSum() + "ms\n"
             + "Queries: " + timeStatistics.getN() + "\n"

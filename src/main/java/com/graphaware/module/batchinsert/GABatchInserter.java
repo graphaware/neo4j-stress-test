@@ -52,7 +52,13 @@ public class GABatchInserter
     {
       Map<String, String> config = new HashMap<>();
       config.put("dbms.pagecache.memory", "512m");
-      inserter = BatchInserters.inserter(new File(dbPath), config);
+      /*if[NEO4J_2_3]
+        inserter = BatchInserters.inserter(new File(dbPath), config);
+       end[NEO4J_2_3]*/
+      /*if[NEO4J_2_2_5]
+        inserter = BatchInserters.inserter(dbPath, config);
+       end[NEO4J_2_2_5]*/
+      
 
       indexProvider = new LuceneBatchInserterIndexProvider(inserter);
       BatchInserterIndex users
