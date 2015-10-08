@@ -155,7 +155,7 @@
     </dependency>
     <dependency>
       <groupId>com.graphaware.neo4j</groupId>
-      <artifactId>server-community</artifactId>
+      <artifactId>server-enterprise</artifactId>
       <version>${graphaware.framework}</version>
       <scope>test</scope>
     </dependency>

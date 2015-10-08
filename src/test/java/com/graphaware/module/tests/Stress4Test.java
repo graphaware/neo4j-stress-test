@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -115,9 +116,12 @@ public class Stress4Test
       try (Transaction tx = database.beginTx())
       {
         long start = System.currentTimeMillis();
-        Result execute = database.execute("MATCH (a:User {id:\"" + name + "\"})-[:KNOWS]->(b:User)-[:KNOWS]->(c:User) \n"
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put( "id", 0 );
+        Result execute = database.execute("MATCH (a:User {id:id})-[:KNOWS]->(b:User)-[:KNOWS]->(c:User) \n"
+                + "USING INDEX a:User(id) \n"
                 + "WHERE NOT (a)-[:KNOWS]->(c) \n"
-                + "RETURN count(c)");
+                + "RETURN count(c)", params);
         if (execute.hasNext())
         {
           Long res = (Long) execute.next().get("count(c)");
