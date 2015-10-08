@@ -117,8 +117,8 @@ public class Stress4Test
       {
         long start = System.currentTimeMillis();
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put( "id", 0 );
-        Result execute = database.execute("MATCH (a:User {id:id})-[:KNOWS]->(b:User)-[:KNOWS]->(c:User) \n"
+        params.put( "idp", name );
+        Result execute = database.execute("MATCH (a:User {id:{idp}})-[:KNOWS]->(b:User)-[:KNOWS]->(c:User) \n"
                 + "USING INDEX a:User(id) \n"
                 + "WHERE NOT (a)-[:KNOWS]->(c) \n"
                 + "RETURN count(c)", params);
