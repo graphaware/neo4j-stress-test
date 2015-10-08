@@ -13,8 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Before;
+import org.neo4j.graphdb.schema.IndexDefinition;
+import org.neo4j.graphdb.schema.Schema;
 import org.neo4j.test.TestGraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +96,28 @@ public class Stress4Test
     end[NEO4J_2_2_5]*/
     
     LOG.warn("Creating indices");
-    database.execute("CREATE INDEX ON :User(id)");
+    //database.execute("CREATE INDEX ON :User(id)");
+    
+    
+    IndexDefinition indexDefinition;
+    try ( Transaction tx = database.beginTx() )
+    {
+        Schema schema = database.schema();
+        indexDefinition = schema.indexFor( DynamicLabel.label( "User" ) )
+                .on( "id" )
+                .create();
+        tx.success();
+    }
+    LOG.warn("... index created");
+
+    LOG.warn("Waiting for index on line ...");
+    try ( Transaction tx = database.beginTx() )
+    {
+        Schema schema = database.schema();
+        schema.awaitIndexOnline( indexDefinition, 10, TimeUnit.DAYS );
+    }
+    LOG.warn("... index on line");
+
     
     int maxPeople = 100000;
     List<String> people = new ArrayList<>();
