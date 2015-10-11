@@ -25,11 +25,11 @@ public class TestTriadicPatterns
 {
     private static final Logger LOG = LoggerFactory.getLogger(TestTriadicPatterns.class);
 
-  public static void testPattern(String pattern, GraphDatabaseService database, String cypherquery, List<String> testset)
+  public static void testPattern(String pattern, GraphDatabaseService database, String cypherquery, List<?> testset)
   {
     SummaryStatistics statistics = new SummaryStatistics();
     boolean checkPlan = true;
-    for (String value : testset)
+    for (Object value : testset)
     {
       Map<String, Object> params = new HashMap<>();
       params.put( "param", value );

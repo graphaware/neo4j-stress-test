@@ -74,14 +74,14 @@ public class StressGitHubTest
   {
 
     int maxPeople = 1000;
-    List<String> people = new ArrayList<>();
+    List<Integer> people = new ArrayList<>();
     try (Transaction tx = database.beginTx())
     {
       Result result = database.execute("MATCH (n:User) return n.id LIMIT " + maxPeople);
       while (result.hasNext())
       {
         Map<String, Object> row = result.next();
-        people.add((String) row.get("n.id"));
+        people.add((Integer) row.get("n.id"));
       }
       tx.success();
     }
@@ -98,7 +98,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:B]->(c) WHERE NOT (a)-->(c) passes through";
-      String query = "MATCH (a:User {name:{param}})-[:FOLLOWS]->(b)-[:WATCH]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:FOLLOWS]->(b)-[:WATCH]->(c) \n"
                 + "WHERE NOT (a)-->(c) \n"
                 + "RETURN count(c)";
 
@@ -107,7 +107,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:A]->(c) WHERE NOT (a)<-[:A]-(c) passes through";
-      String query = "MATCH (a:User {name:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
                 + "WHERE NOT (a)<-[:FOLLOWS]-(c) \n"
                 + "RETURN count(c)";
 
@@ -116,7 +116,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:A]->(c) WHERE NOT (a:X)-[:A]->(c)";
-      String query = "MATCH (a:User {name:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
                 + "WHERE NOT (a)-[:FOLLOWS]->(c) \n"
                 + "RETURN count(c)";
 
@@ -125,7 +125,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:B]->(c) WHERE NOT (a:X)-[:A]->(c)";
-      String query = "MATCH (a:User {name:{param}})-[:WATCH]->(b)-[:FORK_OF]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:WATCH]->(b)-[:FORK_OF]->(c) \n"
                 + "WHERE NOT (a)-[:WATCH]->(c) \n"
                 + "RETURN count(c)";
 
@@ -134,7 +134,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)<-[:B]-(c) WHERE NOT (a:X)-[:A]->(c)";
-      String query = "MATCH (a:User {name:{param}})-[:WATCH]->(b)<-[:FORK_OF]-(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:WATCH]->(b)<-[:FORK_OF]-(c) \n"
                 + "WHERE NOT (a)-[:WATCH]->(c) \n"
                 + "RETURN count(c)";
 
@@ -144,7 +144,7 @@ public class StressGitHubTest
     // Positive Predicate Expression
     {    
       String pattern = "MATCH (a:X)-->(b)-[:A]->(c) WHERE (a:X)-[:A]->(c) passes through";
-      String query = "MATCH (a:User {name:{param}})-[r1]->(b)-[:WATCH]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[r1]->(b)-[:WATCH]->(c) \n"
                 + "WHERE (a)-[:WATCH]->(c) \n"
                 + "RETURN count(c)";
 
@@ -153,7 +153,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-->(b)-->(c) WHERE (a)-->(c)";
-      String query = "MATCH (a:User {name:{param}})-->(b)-->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-->(b)-->(c) \n"
                 + "WHERE (a)-->(c) \n"
                 + "RETURN count(c)";
 
@@ -162,7 +162,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:B]->(c) WHERE (a)-->(c) passes through";
-      String query = "MATCH (a:User {name:{param}})-[:FOLLOWS]->(b)-[:WATCH]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:FOLLOWS]->(b)-[:WATCH]->(c) \n"
                 + "WHERE (a)-->(c) \n"
                 + "RETURN count(c)";
 
@@ -171,7 +171,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:A]->(c) WHERE (a)<-[:A]-(c) passes through";
-      String query = "MATCH (a:User {name:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
                 + "WHERE (a)<-[:FOLLOWS]-(c) \n"
                 + "RETURN count(c)";
 
@@ -180,7 +180,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:A]->(c) WHERE (a:X)-[:A]->(c)";
-      String query = "MATCH (a:User {name:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:FOLLOWS]->(b)-[:FOLLOWS]->(c) \n"
                 + "WHERE (a)-[:FOLLOWS]->(c) \n"
                 + "RETURN count(c)";
 
@@ -189,7 +189,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)-[:B]->(c) WHERE (a:X)-[:A]->(c)";
-      String query = "MATCH (a:User {name:{param}})-[:WATCH]->(b)-[:FORK_OF]->(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:WATCH]->(b)-[:FORK_OF]->(c) \n"
                 + "WHERE (a)-[:WATCH]->(c) \n"
                 + "RETURN count(c)";
 
@@ -198,7 +198,7 @@ public class StressGitHubTest
     
     {    
       String pattern = "MATCH (a:X)-[:A]->(b)<-[:B]-(c) WHERE (a:X)-[:A]->(c)";
-      String query = "MATCH (a:User {name:{param}})-[:WATCH]->(b)<-[:FORK_OF]-(c) \n"
+      String query = "MATCH (a:User {id:{param}})-[:WATCH]->(b)<-[:FORK_OF]-(c) \n"
                 + "WHERE (a)-[:WATCH]->(c) \n"
                 + "RETURN count(c)";
 
@@ -207,27 +207,27 @@ public class StressGitHubTest
     
     // Negative Predicate Expression and matching labels
 
-//    {    
-//      String pattern = "MATCH (a:X)-->(b:Y)-->(c:Y) WHERE NOT (a)-->(c)";
-//      String query = "MATCH (a:Company {name:{param}})-->(b:Person)-->(c:Person) \n"
-//                + "WHERE NOT (a)-->(c) \n"
-//                + "RETURN count(c)";
-//
-//      testPattern(pattern, database, query, companies);
-//    }
-//    
+    {    
+      String pattern = "MATCH (a:X)-->(b:Y)-->(c:Y) WHERE NOT (a)-->(c)";
+      String query = "MATCH (a:User {id:{param}})-->(b:Repository)-->(c:Repository) \n"
+                + "WHERE NOT (a)-->(c) \n"
+                + "RETURN count(c)";
+
+      testPattern(pattern, database, query, people);
+    }
+    
 //    {    
 //      String pattern = "MATCH (a:X)-->(b:Y)-->(c:Z) WHERE NOT (a)-->(c) passes through";
-//      String query = "MATCH (a:Company {name:{param}})-->(b:Person)-->(c:Skill) \n"
+//      String query = "MATCH (a:PushEvent {id:{param}})-->(b:User)-->(c:Branch) \n"
 //                + "WHERE NOT (a)-->(c) \n"
 //                + "RETURN count(c)";
 //
-//      testPattern(pattern, database, query, companies);
+//      testPattern(pattern, database, query, people);
 //    }
 //    
 //    {    
 //      String pattern = "MATCH (a:X)-->(b:Y)-->(c) WHERE NOT (a)-->(c) passes through";
-//      String query = "MATCH (a:Person {name:{param}})-->(b:Person)-->(c:Skill) \n"
+//      String query = "MATCH (a:Person {id:{param}})-->(b:Person)-->(c:Skill) \n"
 //                + "WHERE (a)-->(c) \n"
 //                + "RETURN count(c)";
 //
