@@ -73,7 +73,7 @@ public class StressGitHubTest
   public void test() throws IOException
   {
 
-    int maxPeople = 1000;
+    int maxPeople = 100000;
     List<Integer> people = new ArrayList<>();
     try (Transaction tx = database.beginTx())
     {
