@@ -28,12 +28,14 @@ public class TestTriadicPatterns
   public static void testPattern(String pattern, GraphDatabaseService database, String cypherquery, List<?> testset)
   {
     SummaryStatistics statistics = new SummaryStatistics();
+    SummaryStatistics resultStatistics = new SummaryStatistics();
+
     boolean checkPlan = true;
     for (Object value : testset)
     {
       Map<String, Object> params = new HashMap<>();
       params.put( "param", value );
-      Result testSingle = testSingle(database, cypherquery, params, statistics);
+      Result testSingle = testSingle(database, cypherquery, params, statistics, resultStatistics);
       if (checkPlan && testSingle != null)
       {
         checkPlan(testSingle.getExecutionPlanDescription());
@@ -46,15 +48,23 @@ public class TestTriadicPatterns
             + "Mean: " + statistics.getMean() + "ms\n"
             + "Min: " + statistics.getMin() + "ms\n"
             + "Max: " + statistics.getMax() + "ms\n"
-            + "Variance: " + statistics.getVariance() + "ms\n");
+            + "Variance: " + statistics.getVariance() + "ms\n"
+            + "Results Min: " + resultStatistics.getMin() + "\n"
+            + "Results Max: " + resultStatistics.getMax() + "\n"
+            + "Results Mean: " + resultStatistics.getMean() + "\n");
   }
-  public static Result testSingle(GraphDatabaseService database, String cypherquery, Map<String, Object> params, SummaryStatistics timeStatistics)
+  public static Result testSingle(GraphDatabaseService database, String cypherquery, Map<String, Object> params, SummaryStatistics timeStatistics, SummaryStatistics resultStatistics)
   {
     try (Transaction tx = database.beginTx())
     {
       long start = System.currentTimeMillis();
       Result execute = database.execute(cypherquery, params);      
       long end = System.currentTimeMillis();
+      if (execute.hasNext())
+      {
+        Long res = (Long) execute.next().get("count(c)");
+        resultStatistics.addValue(res);
+      }
       timeStatistics.addValue(end - start);
       tx.success();
       return execute;
