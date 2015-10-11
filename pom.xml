@@ -393,6 +393,7 @@
           <argLine>-Xmx2G</argLine>
           <systemPropertyVariables>
              <databaseCSVPath>${basedir}/database/pokec.txt</databaseCSVPath>
+             <databasePath>${databasePath}</databasePath>
            </systemPropertyVariables>
         </configuration>
         <!--executions>
