@@ -38,6 +38,7 @@ public class TestTriadicPatterns
       Result testSingle = testSingle(database, cypherquery, params, statistics, resultStatistics);
       if (checkPlan && testSingle != null)
       {
+        LOG.warn("Plan: " + testSingle.getExecutionPlanDescription());
         checkPlan(testSingle.getExecutionPlanDescription());
         checkPlan = false;
       }
