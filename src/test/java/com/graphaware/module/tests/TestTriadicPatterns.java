@@ -42,16 +42,16 @@ public class TestTriadicPatterns
         checkPlan = false;
       }
     }
-    LOG.warn("\nPartern: " + pattern + "\n"
-            + "Total time: " + statistics.getSum() + "ms\n"
-            + "Query Performed: " + statistics.getN() + "\n"
-            + "Mean: " + statistics.getMean() + "ms\n"
-            + "Min: " + statistics.getMin() + "ms\n"
-            + "Max: " + statistics.getMax() + "ms\n"
-            + "Variance: " + statistics.getVariance() + "ms\n"
-            + "Results Min: " + resultStatistics.getMin() + "\n"
-            + "Results Max: " + resultStatistics.getMax() + "\n"
-            + "Results Mean: " + resultStatistics.getMean() + "\n");
+    LOG.warn("\nPartern: " + pattern + "\t"
+            + "Total time: " + statistics.getSum() + "ms\t"
+            + "Query Performed: " + statistics.getN() + "\t"
+            + "Mean: " + statistics.getMean() + "ms\t"
+            + "Min: " + statistics.getMin() + "ms\t"
+            + "Max: " + statistics.getMax() + "ms\t"
+            + "Variance: " + statistics.getVariance() + "ms\t"
+            + "Results Min: " + resultStatistics.getMin() + "\t"
+            + "Results Max: " + resultStatistics.getMax() + "\t"
+            + "Results Mean: " + resultStatistics.getMean() + "\t");
   }
   public static Result testSingle(GraphDatabaseService database, String cypherquery, Map<String, Object> params, SummaryStatistics timeStatistics, SummaryStatistics resultStatistics)
   {
