@@ -77,7 +77,7 @@ public class StressGitHubTest
     List<Integer> people = new ArrayList<>();
     try (Transaction tx = database.beginTx())
     {
-      Result result = database.execute("MATCH (n:User) return n.id LIMIT " + maxPeople);
+      Result result = database.execute("MATCH (n:User) return n.id");// LIMIT " + maxPeople);
       while (result.hasNext())
       {
         Map<String, Object> row = result.next();
