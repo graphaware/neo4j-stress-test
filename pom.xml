@@ -13,7 +13,7 @@
       </activation>
       <properties>
         <graphaware.framework>2.3.0.35-SNAPSHOT</graphaware.framework>
-        <neo4j.version>2.3.0-M03</neo4j.version>
+        <neo4j.version>2.3.0-RC1</neo4j.version>
         <munge.symbols>NEO4J_2_3</munge.symbols>
       </properties>
     </profile>
